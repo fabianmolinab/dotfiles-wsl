@@ -1,39 +1,34 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+# Source and auto loading of `zinit` plugin manager.
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Set case-insensitive autocompletion.
-unsetopt caseglob
-autoload -Uz compinit
-compinit
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-# Add plugins to the plugin list.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-z )
-
-# Initialize oh-my-zsh.
-source $ZSH/oh-my-zsh.sh
-
-# Add zplug plugin manager.
-source ~/.zplug/init.zsh
+#Load powerlevel10k
+zinit ice depth"1" 
+zinit light romkatv/powerlevel10k
 
 # Add zsh-z plugin.
-zplug "agkozak/zsh-z"
+zinit light agkozak/zsh-z
 
 # Add zsh-autosuggestions plugin.
-zplug "zsh-users/zsh-autosuggestions"
+zinit light zsh-users/zsh-autosuggestions
 
 # Add zsh-syntax-highlighting plugin.
-zplug "zsh-users/zsh-syntax-highlighting"
+zinit light zdharma-continuum/fast-syntax-highlighting
 
-# Add spaceship prompt theme.
-#zplug "spaceship-prompt/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
-
-# Load the plugins and the theme.
-zplug load --verbose
-
-#Prompt
-eval "$(starship init zsh)"
+# Annexes for `zinit`.
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
 
 #Preferred editor for local and remote sessions
  if [[ -n $SSH_CONNECTION ]]; then
@@ -46,14 +41,14 @@ eval "$(starship init zsh)"
 export GIT_EDITOR='/usr/bin/nvim -c "set fenc=utf-8" -c "set spell" -c "set syn=gitcommit"'
 
 #---- ALIAS -----
-#exa
-alias -g ll="exa -l --group-directories-first --icons --classify -h --no-user"
-alias -g lla="exa -lah --group-directories-first --icons --classify --no-user"
-alias -g llh="exa -l --group-directories-first --icons --tree --classify --no-user --level=2"
+#eza
+alias -g ll="eza -l --group-directories-first --icons --classify -h --no-user"
+alias -g lla="eza -lah --group-directories-first --icons --classify --no-user"
+alias -g llh="eza -l --group-directories-first --icons --tree --classify --no-user --level=2"
 alias fzfi="rg --files --hidden --follow --no-ignore-vcs -g '!{node_modules,.git}' | fzf"
-alias tree='exa -T --icons --classify --group --group-directories-first --time-style=long-iso --color-scale -a -I=".git|.svn|.hg|CSV|.DS_Store|Thumbs.db|node_modules|bower_components|.code-search"'
+alias tree='eza -T --icons --classify --group --group-directories-first --time-style=long-iso --color-scale -a -I=".git|.svn|.hg|CSV|.DS_Store|Thumbs.db|node_modules|bower_components|.code-search"'
 
-# Pacman 
+# Package
 alias install="sudo apt install"
 alias update="sudo apt upgrade"
 
@@ -91,3 +86,20 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 
 #--- Browsers
 export LAUNCHPAD_BROWSERS="chrome,firefox"
+
+### Added by Zinit's installer
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit's installer chunk
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
